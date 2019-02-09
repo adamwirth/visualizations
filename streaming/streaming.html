@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<head>
+    <title>visualizations - streaming</title>
+    <meta charset="utf-8">
+
+    <style>
+
+    body {
+        background-color: #EEE;
+    }
+
+    svg {
+        display: block;
+        margin: auto;
+    }
+    
+    rect {
+        fill: coral;
+    }
+
+    text {
+        fill: darkslategrey;
+        font: 10px sans-serif;
+        text-anchor: middle;
+    }
+
+    </style>
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+
+    <script type="module">
+        import streaming from './streaming.js';
+
+        streaming();
+        console.log('finished streaming')
+    </script>
+</head>
+
+<body></body>
+
+</html>
