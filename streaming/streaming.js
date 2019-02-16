@@ -1,11 +1,10 @@
 import { require } from 'https://unpkg.com/d3-require@1?module';
 
-
-function nap () { return setTimeout(function() {}, Math.random() * 3) && true }
+function nap () { setTimeout(function() {}, Math.random() * 3); }
 
 /** Store a time then return the datum */
 // TODO function* ? other ways to approach
-const pointMaker = async () => {
+export const pointMaker = async () => {
     const x = new Date().getTime();
     nap();
     return {
@@ -31,9 +30,7 @@ export default async function chart(selector='body') {
         .rangeRound([0, width]);
 
     // Y
-    const y = d3.scaleLinear()
-        .range([height, 0])
-        .domain([0, 100]);
+    const y = d3.scaleLinear([height, 0], [0, 100]);
 
     // Chart
     const svg = d3.select(selector).append('svg')
@@ -47,20 +44,15 @@ export default async function chart(selector='body') {
         .attr('class', 'axis axis--x')
         .attr('transform', `translate(0,${height})`)
         .call(d3.axisBottom(x));
-
-    const points = []
-    for (let i = 0; i < 5; i += 1) {
-        points.push(pointMaker());
-    }
     
     // Bars
     const bar = svg.selectAll('.bar')
-        .data(points, async function(key, i, j) { 
-            console.log(key)
+        .data([], async function(key, i, j) { 
             const thing = await key;
-            return thing.y;
+            console.log(thing);
+            return thing;
         })
-        .enter(points, async function(d) {
+        .enter([], async function(d) {
             console.log('enter', d);
             return await d;
          })
@@ -69,14 +61,27 @@ export default async function chart(selector='body') {
         .attr('transform', function (d, i) { return `translate(${i * barWidth},0)`; });
 
     bar.append('rect')
-        .attr('y', async function(d) { return y(await d.y); })
+        .attr('y', async function(d) { 
+            const val = await d;
+            console.log('y', val);
+            return y(val.y);
+        })
         .attr('width', barWidth - 1)
-        .attr('height', async function (d) { return height - y(await d.y); });
+        .attr('height', async function (d) {
+            const val = await d;
+            console.log('height', val)
+            return height - y(val.y); 
+        });
 
     bar.append('text')
         .attr('x', barWidth / 2)
         .attr('dy', '.75')
         .attr('y', 8)
-        .text(async function (d) { return await d.y; });
+        .text(async function (d) {
+            const val = await d;
+            console.log('text', val)
+            return val.y; 
+        });
 
+    return bar;
 }

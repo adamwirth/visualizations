@@ -31,10 +31,28 @@
     <script src="https://d3js.org/d3.v5.min.js"></script>
 
     <script type="module">
-        import streaming from './streaming.js';
+        import streaming, { pointMaker } from './streaming.js';
 
-        console.log('starting streaming');
-        streaming().then(() => console.log('finished streaming'));
+
+        console.debug('making some points')
+        const points = []
+        for (let i = 0; i < 5; i += 1) {
+            points.push(pointMaker());
+        }
+
+        console.log('building chart');
+
+        streaming().then(bar => {
+            console.log('finished building chart!');
+
+            console.debug('bar, i think', bar);
+
+            console.log('inserting points into the chart now');
+
+            for (let i = 0; i < points.length; i++) {
+                bar.insert(points.shift()) // TODO could be done in more of a random order
+            }
+        })
         
     </script>
 </head>
