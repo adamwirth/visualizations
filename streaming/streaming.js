@@ -26,7 +26,7 @@ export default async function chart(selector='body') {
     
     // X
     const x = d3.scaleTime()
-        //.domain([new Date(2019, 0, 1), new Date(2019, 0, 1)]) TODO ???
+        .domain([Date.now() - 100000, Date.now() + 1000000])
         .rangeRound([0, width]);
 
     // Y
