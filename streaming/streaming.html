@@ -33,8 +33,9 @@
     <script type="module">
         import streaming from './streaming.js';
 
-        streaming();
-        console.log('finished streaming')
+        console.log('starting streaming');
+        streaming().then(() => console.log('finished streaming'));
+        
     </script>
 </head>
 
