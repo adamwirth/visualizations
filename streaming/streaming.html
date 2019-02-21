@@ -33,25 +33,55 @@
     <script type="module">
         import streaming, { pointMaker } from './streaming.js';
 
+        console.debug('building chart');
 
-        console.debug('making some points')
-        const points = []
-        for (let i = 0; i < 5; i += 1) {
-            points.push(pointMaker());
-        }
+        streaming().then(args => {
+            console.debug('finished building chart!');
 
-        console.log('building chart');
+            const y = args.y, x = args.x, bar = args.bar, height = args.width, width = args.width, barWidth = args.barWidth
 
-        streaming().then(bar => {
-            console.log('finished building chart!');
+            console.log('creating and inserting points into the chart now');
 
-            console.debug('bar, i think', bar);
-
-            console.log('inserting points into the chart now');
-
-            for (let i = 0; i < points.length; i++) {
-                bar.insert(points.shift()) // TODO could be done in more of a random order
+            for (let i = 0; i < 5; i++) {
+                const p = pointMaker();
+                args.bar.data([p], async function(d, i, g) { 
+                    // const v = await d;
+                    // console.log('d,i,v,g:', d, i, v, g);
+                    return await d; 
+                })
+                    .join(enter => enter
+                            .append('g')
+                            .attr('class', 'bar')
+                            .attr('transform', function (d, i) { return `translate(${i * args.barWidth},0)`; }) // TODO could be done in more of a random order
+                    );
             }
+
+            console.log('post loop')
+
+            bar.append('rect')
+                .attr('y', async function (d) {
+                    const val = await d;
+                    console.log('y', val);
+                    return y(val.y);
+                })
+                .attr('width', barWidth - 1)
+                .attr('height', async function (d) {
+                    const val = await d;
+                    console.log('height', val)
+                    return height - y(val.y);
+                });
+
+            bar.append('text')
+                .attr('x', barWidth / 2)
+                .attr('dy', '.75')
+                .attr('y', 8)
+                .text(async function (d) {
+                    const val = await d;
+                    console.log('text', val)
+                    return val.y;
+                });
+
+            console.debug('end');
         })
         
     </script>

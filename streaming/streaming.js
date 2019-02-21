@@ -55,10 +55,7 @@ export default async function chart(selector='body') {
         .enter([], async function(d) {
             console.log('enter', d);
             return await d;
-         })
-        .append('g')
-        .attr('class', 'bar')
-        .attr('transform', function (d, i) { return `translate(${i * barWidth},0)`; });
+         });
 
     bar.append('rect')
         .attr('y', async function(d) { 
@@ -83,5 +80,5 @@ export default async function chart(selector='body') {
             return val.y; 
         });
 
-    return bar;
+    return { bar, x, y, height, width, barWidth };
 }
