@@ -18,6 +18,7 @@
     
     rect {
         fill: coral;
+        opacity: .75;
     }
 
     text {
@@ -31,58 +32,124 @@
     <script src="https://d3js.org/d3.v5.min.js"></script>
 
     <script type="module">
-        import streaming, { pointMaker } from './streaming.js';
+        import chartArgs, { pointMaker } from './streaming.js';
 
         console.debug('building chart');
 
-        streaming().then(args => {
-            console.debug('finished building chart!');
+        const args = chartArgs()
+        console.debug('finished generating chart args')
+        const height = args.width, width = args.width, margin = args.margin, barWidth = args.barWidth
+       
+        const selector = 'body'
 
-            const y = args.y, x = args.x, bar = args.bar, height = args.width, width = args.width, barWidth = args.barWidth
+        // X
+        const x = d3.scaleTime()
+            .domain([Date.now() - 100000, Date.now() + 1000000])
+            .rangeRound([0, width]);
 
-            console.log('creating and inserting points into the chart now');
+        // Y
+        const y = d3.scaleLinear([height, 0], [0, 100]);
 
-            for (let i = 0; i < 5; i++) {
-                const p = pointMaker();
-                args.bar.data([p], async function(d, i, g) { 
-                    // const v = await d;
-                    // console.log('d,i,v,g:', d, i, v, g);
-                    return await d; 
-                })
-                    .join(enter => enter
-                            .append('g')
-                            .attr('class', 'bar')
-                            .attr('transform', function (d, i) { return `translate(${i * args.barWidth},0)`; }) // TODO could be done in more of a random order
-                    );
-            }
+        // Chart
+        const svg = d3.select(selector).append('svg')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .append('g')
+            .attr('transform', `translate(${margin.left},${margin.top})`);
 
-            console.log('post loop')
+        // Axis
+        svg.append('g')
+            .attr('class', 'axis axis--x')
+            .attr('transform', `translate(0,${height})`)
+            .call(d3.axisBottom(x));
+        
+        // Bars
+        const bar = svg.selectAll('.bar')
 
-            bar.append('rect')
-                .attr('y', async function (d) {
-                    const val = await d;
-                    console.log('y', val);
-                    return y(val.y);
-                })
-                .attr('width', barWidth - 1)
-                .attr('height', async function (d) {
-                    const val = await d;
-                    console.log('height', val)
-                    return height - y(val.y);
-                });
+        bar.append('rect')
+            .attr('y', async function(d) { 
+                const val = await d;
+                console.log('y', val);
+                return y(val.y);
+            })
+            .attr('width', barWidth - 1)
+            .attr('height', async function (d) {
+                const val = await d;
+                console.log('height', val)
+                return height - y(val.y); 
+            });
 
-            bar.append('text')
-                .attr('x', barWidth / 2)
-                .attr('dy', '.75')
-                .attr('y', 8)
-                .text(async function (d) {
-                    const val = await d;
-                    console.log('text', val)
-                    return val.y;
-                });
+        bar.append('text')
+            .attr('x', barWidth / 2)
+            .attr('dy', '.75')
+            .attr('y', 8)
+            .text(async function (d) {
+                const val = await d;
+                console.log('text', val)
+                return val.y; 
+            });
+            
 
-            console.debug('end');
-        })
+        console.log('creating and inserting points into the chart now');
+
+        const count = 5
+        for (let i = 0; i < count; i++) {
+            const p = pointMaker();
+            bar.data([{ 
+            x: Math.random() * 45,
+            y: Math.random() * 20,
+        }], function(d, i, g) { 
+                console.log('loop', d)
+                return d
+            })
+                .join(enter => enter
+                    .append('g')
+                    .attr('class', 'bar')
+                    .attr('transform', function (d, i, g) { 
+                        console.log('transform', d, i, g)
+                        return `translate(${d.x * (barWidth - 1) / count},0)`;
+                     }) // TODO could be done in more of a random order
+                )
+                .append('rect')
+                    .attr('y', function (d) {
+                        const val = d;
+                        console.log('y', val);
+                        return y(val.y);
+                    })
+                    .attr('width', barWidth - 1)
+                    .attr('height', function (d) {
+                        const val = d;
+                        console.log('height', val)
+                        return height - y(val.y);
+                    });
+        }
+
+        console.log('post loop')
+
+        bar.append('rect')
+            .attr('y', function (d) {
+                const val = d;
+                console.log('y', val);
+                return y(val.y);
+            })
+            .attr('width', barWidth - 1)
+            .attr('height', function (d) {
+                const val = d;
+                console.log('height', val)
+                return height - y(val.y);
+            });
+
+        bar.append('text')
+            .attr('x', barWidth / 2)
+            .attr('dy', '.75')
+            .attr('y', 8)
+            .text(async function (d) {
+                const val = await d;
+                console.log('text', val)
+                return val.y;
+            });
+
+        console.debug('end');
         
     </script>
 </head>
