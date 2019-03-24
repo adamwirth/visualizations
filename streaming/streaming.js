@@ -2,15 +2,14 @@ function nap () { setTimeout(function() {}, Math.random() * 3); }
 
 /** Store a time then return the datum */
 // TODO function* ? other ways to approach
-export const pointMaker = async () => {
-    const x = new Date().getTime();
-    nap();
-    return {
-        data: {
-            x,
-            y: Math.random() * 100,
-        }
-    }
+export const pointMaker = async function pM() {
+    const v = await new Promise((resolve, reject) => {
+        const x = new Date().getTime();
+        const y = Math.random() * 16;
+        nap();
+        return resolve({ x, y });
+    });
+    return v;
 }
 
 export default function chartArgs() {

@@ -67,14 +67,12 @@
         const bar = svg.selectAll('.bar')
 
         bar.append('rect')
-            .attr('y', async function(d) { 
-                const val = await d;
+            .attr('y', function(val) {
                 console.log('y', val);
                 return y(val.y);
             })
             .attr('width', barWidth - 1)
-            .attr('height', async function (d) {
-                const val = await d;
+            .attr('height', function (val) {
                 console.log('height', val)
                 return height - y(val.y); 
             });
@@ -83,58 +81,59 @@
             .attr('x', barWidth / 2)
             .attr('dy', '.75')
             .attr('y', 8)
-            .text(async function (d) {
-                const val = await d;
+            .text(function (val) {
                 console.log('text', val)
                 return val.y; 
             });
             
-
         console.log('creating and inserting points into the chart now');
+
+        const getAsyncElement = function gAE(promise, key=null) {
+            return promise.then(retval => {
+                console.log('retval', retval)
+                return key ? retval[key] : retval
+            })
+        }
 
         const count = 5
         for (let i = 0; i < count; i++) {
-            const p = pointMaker();
-            bar.data([{ 
-            x: Math.random() * 45,
-            y: Math.random() * 20,
-        }], function(d, i, g) { 
-                console.log('loop', d)
-                return d
+            bar.data([pointMaker()], function(val, i, g) {
+                const d2 = getAsyncElement(val)
+                console.log('loop', d2)
+                return d2
             })
                 .join(enter => enter
                     .append('g')
                     .attr('class', 'bar')
-                    .attr('transform', function (d, i, g) { 
-                        console.log('transform', d, i, g)
-                        return `translate(${d.x * (barWidth - 1) / count},0)`;
+                    .attr('transform', function (val, i, g) {
+                        const x2 = getAsyncElement(val, 'x')
+                        console.log('transform', x2, i, g)
+                        return `translate(${x2 * (barWidth - 1) / count},0)`;
                      }) // TODO could be done in more of a random order
                 )
                 .append('rect')
-                    .attr('y', function (d) {
-                        const val = d;
-                        console.log('y', val);
-                        return y(val.y);
+                    .attr('y', function (val) {
+                        const y2 = getAsyncElement(val, 'y');
+                        console.log('y2', y2);
+                        return y(y2);
                     })
                     .attr('width', barWidth - 1)
-                    .attr('height', function (d) {
-                        const val = d;
-                        console.log('height', val)
-                        return height - y(val.y);
+                    .attr('height', function (val) {
+                        const y2 = getAsyncElement(val, 'y')
+                        console.log('height', y2)
+                        return height - y(y2);
                     });
         }
 
         console.log('post loop')
 
         bar.append('rect')
-            .attr('y', function (d) {
-                const val = d;
+            .attr('y', function (val) {
                 console.log('y', val);
                 return y(val.y);
             })
             .attr('width', barWidth - 1)
-            .attr('height', function (d) {
-                const val = d;
+            .attr('height', function (val) {
                 console.log('height', val)
                 return height - y(val.y);
             });
@@ -143,8 +142,7 @@
             .attr('x', barWidth / 2)
             .attr('dy', '.75')
             .attr('y', 8)
-            .text(async function (d) {
-                const val = await d;
+            .text(function (val) {
                 console.log('text', val)
                 return val.y;
             });
