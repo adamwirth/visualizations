@@ -41,7 +41,13 @@ const str = s => parserState => {
         return parserState
     }
 
-    if (targetString.slice(index).startsWith(s)) {
+    const slicedTarget = targetString.slice(index)
+
+    if (slicedTarget.length === 0) {
+        return updateParserError(parserState, `str: Tried to match "${s}", got an unexpected end of input.`)
+    }
+
+    if (slicedTarget.startsWith(s)) {
         return updateParserState(
             parserState, index + s.length, s,
         )
