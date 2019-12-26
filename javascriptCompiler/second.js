@@ -2,6 +2,9 @@ const A = require('arcsecond')
 
 // ref tutorial https://youtu.be/1axJDmK_pnE?list=PLP29wDx6QmW5yfO1LAgO8kU3aQEj8SIrU
 
+const trailMax = 10 // its like trailmix haha
+const trail = s => s.length > trailMax ? `"${s.slice(0, trailMax)}..."` : `"${s}"`
+
 // "curried" function.
 // todo why is it called currying anyway...
 const str = s => targetString => {
@@ -9,7 +12,7 @@ const str = s => targetString => {
         return s
     }
 
-    throw new Error(`Tried to match ${s}, instead got "${targetString.slice(0, 10)}..."`)
+    throw new Error(`Tried to match "${s}", instead got ${trail(targetString)}`)
 }
 
 const run = (parser, targetString) => {
