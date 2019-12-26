@@ -1,5 +1,3 @@
-const A = require('arcsecond')
-
 // ref tutorial https://youtu.be/1axJDmK_pnE?list=PLP29wDx6QmW5yfO1LAgO8kU3aQEj8SIrU
 
 const trailMax = 10 // its like trailmix haha
@@ -29,8 +27,23 @@ const str = s => parserState => {
     throw new Error(`Tried to match "${s}", instead got ${trail(targetString)}`)
 }
 
-// parsers should all be receiving and returning a "Parser State" object
+const sequenceOf = parsers => parserState => {
+    const results = []
+    let nextState = parserState
 
+    for (let p of parsers) {
+        nextState = p(nextState)
+        results.push(nextState.result)
+    }
+
+    return {
+        ...nextState,
+        // overrides the spread's result of with the array of result
+        result: results,
+    }
+}
+
+// parsers should all be receiving and returning a "Parser State" object
 const run = (parser, targetString) => {
     const initialState = {
         targetString,
@@ -42,13 +55,16 @@ const run = (parser, targetString) => {
     return parser(initialState)
 }
 
-const parser = str('hello world!')
+const parser = sequenceOf([
+    str('hello world'),
+    str('goodbye'),
+])
 
 console.log(
-    run(parser, 'hello world! This should work')
+    run(parser, 'hello worldgoodbye')
 )
 /*
-{ targetString: 'hello world! This should work',
-  index: 12,
-  result: 'hello world!' }
+{ targetString: 'hello worldgoodbye',
+  index: 18,
+  result: [ 'hello world', 'goodbye' ] }
 */
