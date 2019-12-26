@@ -2,3 +2,4 @@ env/
 envsource/
 .env
 .vscode
+node_modules/
