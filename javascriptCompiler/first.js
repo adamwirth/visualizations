@@ -5,19 +5,16 @@
 // MISC [e]bnf grammar flashbacks
 // e.g. <int> := <int>|<int>+<digit> or something
 
-const arcsecond = require('arcsecond')
+// CMD node ./javascriptCompiler/first.js
+const A = require('arcsecond')
 
-// only likes this string
-const stringParser = arcsecond.str('hello world')
+// only likes this string, however many times now
+const stringParser = A.many(A.str('hello world'))
 
-console.log(stringParser.run('hello world'))
-// { isError: false, result: 'hello world', index: 11, data: null }
-
-console.log(stringParser.run('hello universe'))
+console.log(stringParser.run('hello world hello world hello world'))
 /*
-{ isError: true,
-  error:
-   "ParseError (position 0): Expecting string 'hello world', got 'hello unive...'",
-  index: 0,
+{ isError: false,
+  result: [ 'hello world' ],
+  index: 11,
   data: null }
-  */
+*/
