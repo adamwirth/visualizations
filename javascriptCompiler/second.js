@@ -24,7 +24,11 @@ const str = s => parserState => {
         }
     }
 
-    throw new Error(`Tried to match "${s}", instead got ${trail(targetString)}`)
+    return {
+        ...parserState,
+        error: `Tried to match "${s}", instead got ${trail(targetString)}`,
+        isError: true,
+    }
 }
 
 const sequenceOf = parsers => parserState => {
@@ -55,16 +59,15 @@ const run = (parser, targetString) => {
     return parser(initialState)
 }
 
-const parser = sequenceOf([
-    str('hello world'),
-    str('goodbye'),
-])
+const parser = str('hello world')
 
 console.log(
-    run(parser, 'hello worldgoodbye')
+    run(parser, 'gyoza')
 )
 /*
-{ targetString: 'hello worldgoodbye',
-  index: 18,
-  result: [ 'hello world', 'goodbye' ] }
+{ targetString: 'gyoza',
+  index: 0,
+  result: null,
+  error: 'Tried to match "hello world", instead got "gyoza"',
+  isError: true }
 */
