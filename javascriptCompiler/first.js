@@ -11,12 +11,14 @@ const A = require('arcsecond')
 // name our things as some type
 const tag = type => value => ({ type, value })
 
-const stringParser = A.sequenceOf([
-
+const lettersDigitsParser =
     A.sequenceOf([
         A.letters,
         A.digits
-    ]).map(tag('letterOrDigits')),
+    ]).map(tag('letterOrDigits'))
+
+const stringParser = A.sequenceOf([
+    lettersDigitsParser,
 
     A.str('hello').map(tag('string')),
     A.many(A.char(' ')).map(tag('whitespace')),
