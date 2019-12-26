@@ -1,0 +1,29 @@
+{
+  "name": "visualizations",
+  "version": "1.0.0",
+  "description": "personal scripts",
+  "main": "",
+  "secret": true,
+  "dependencies": {
+    "arcsecond": "^2.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "null"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adamwirth/visualizations.git"
+  },
+  "keywords": [
+    "personal",
+    "visualizations",
+    "tinkering"
+  ],
+  "author": "Adam Wirth",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adamwirth/visualizations/issues"
+  },
+  "homepage": "https://github.com/adamwirth/visualizations#readme"
+}
