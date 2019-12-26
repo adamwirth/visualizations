@@ -86,15 +86,18 @@ const run = (parser, targetString) => {
     return parser(initialState)
 }
 
-const parser = str('hello world')
+const parser = sequenceOf([
+    str('hello world'),
+    str('!'),
+])
 
 console.log(
     run(parser, 'hello world!')
 )
 /*
 { targetString: 'hello world!',
-  index: 11,
-  result: 'hello world',
+  index: 12,
+  result: [ 'hello world', '!' ],
   isError: false,
   error: null }
 */
