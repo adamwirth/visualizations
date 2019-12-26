@@ -8,13 +8,14 @@
 // CMD node ./javascriptCompiler/first.js
 const A = require('arcsecond')
 
+const helloWorld = 'hello world'
 // only likes this string, however many times now
-const stringParser = A.many(A.str('hello world'))
+const stringParser = A.many(A.str(helloWorld))
 
-console.log(stringParser.run('hello world hello world hello world'))
+console.log(stringParser.run(helloWorld + helloWorld + helloWorld))
 /*
 { isError: false,
-  result: [ 'hello world' ],
-  index: 11,
+  result: [ 'hello world', 'hello world', 'hello world' ],
+  index: 33,
   data: null }
-*/
+  */
