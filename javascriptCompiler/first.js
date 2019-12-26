@@ -8,16 +8,20 @@
 // CMD node ./javascriptCompiler/first.js
 const A = require('arcsecond')
 
-// ok now it should create a subsection for each of these. and the .many should nest subsections of whitespace (just the space character)
+// name our things as some type
+const tag = type => value => ({ type, value })
+
 const stringParser = A.sequenceOf([
+
     A.sequenceOf([
         A.letters,
         A.digits
-    ]),
-    A.str('hello'),
-    A.many(A.char(' ')),
-    A.str('world'),
-    A.endOfInput,
+    ]).map(tag('letterOrDigits')),
+
+    A.str('hello').map(tag('string')),
+    A.many(A.char(' ')).map(tag('whitespace')),
+    A.str('world').map(tag('string')),
+    A.endOfInput.map(tag('endOfInput')),
 ])
 
 console.log(
@@ -28,7 +32,11 @@ console.log(
 /*
 { isError: false,
   result:
-   [ [ 'asdf', '1234' ], 'hello', [ ' ', ' ', ' ' ], 'world', null ],
+   [ { type: 'letterOrDigits', value: [Array] },
+     { type: 'string', value: 'hello' },
+     { type: 'whitespace', value: [Array] },
+     { type: 'string', value: 'world' },
+     { type: 'endOfInput', value: null } ],
   index: 21,
   data: null }
 */
