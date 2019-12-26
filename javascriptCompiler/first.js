@@ -9,13 +9,20 @@
 const A = require('arcsecond')
 
 const helloWorld = 'hello world'
-// only likes this string, however many times now
+// only likes this string, however many times now, and now removes case. doesnt seem to ignore case
+// TODO curious how this could be refactored to extract functions?
 const stringParser = A.many(A.str(helloWorld))
+    .map(results =>
+        results.map(s => s.toUpperCase()).join(''))
 
-console.log(stringParser.run(helloWorld + helloWorld + helloWorld))
+
+console.log(stringParser.run(
+    helloWorld + helloWorld + 'hello WORLD'
+))
+// TODO misunderstood - the results is being mapped -- not the parsing part
 /*
 { isError: false,
-  result: [ 'hello world', 'hello world', 'hello world' ],
-  index: 33,
+  result: 'HELLO WORLDHELLO WORLD',
+  index: 22,
   data: null }
   */
